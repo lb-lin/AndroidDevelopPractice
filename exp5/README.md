@@ -1,4 +1,18 @@
+# 使用TensorFlow Lite Model Maker生成图像分类模型 
+
+## 安装相关依赖，安装完成之后需要重启Jupyter内核
+
+
 ```python
+sudo apt -y install libportaudio2
+pip install -q tflite-model-maker
+```
+
+## 导入相关包 
+
+
+```python
+
 import os
 
 import numpy as np
@@ -34,7 +48,9 @@ import matplotlib.pyplot as plt
     You can find the compatibility matrix in TensorFlow Addon's readme:
     https://github.com/tensorflow/addons
       warnings.warn(
+    
 
+## 下载数据集
 
 
 ```python
@@ -48,7 +64,7 @@ image_path = os.path.join(os.path.dirname(image_path), 'flower_photos')
     Downloading data from https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz
     228818944/228813984 [==============================] - 11s 0us/step
     228827136/228813984 [==============================] - 11s 0us/step
-
+    
 
 
 ```python
@@ -61,10 +77,12 @@ train_data, test_data = data.split(0.9)
     2023-05-10 04:01:13.110062: I tensorflow/stream_executor/cuda/cuda_diagnostics.cc:156] kernel driver does not appear to be running on this host (codespaces-b511a4): /proc/driver/nvidia/version does not exist
     2023-05-10 04:01:13.151998: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
     To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-
+    
 
     INFO:tensorflow:Load image with size: 3670, num_label: 5, labels: daisy, dandelion, roses, sunflowers, tulips.
+    
 
+## 拆分数据集，90%为训练数据，10%为测试数据
 
 
 ```python
@@ -90,4 +108,18 @@ model = image_classifier.create(train_data)
     _________________________________________________________________
     None
     Epoch 1/5
+    
 
+## 利用测试数据评估模型的效果
+
+
+```python
+loss, accuracy = model.evaluate(test_data)
+```
+
+## 导出模型到当前目录
+
+
+```python
+model.export(export_dir='.')
+```
