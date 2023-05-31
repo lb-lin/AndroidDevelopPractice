@@ -1,3 +1,7 @@
+# TensorFlow训练石头剪刀布数据集
+
+## 下载数据集
+
 ```python
 !wget --no-check-certificate https://storage.googleapis.com/learning-datasets/rps.zip 
 !wget --no-check-certificate https://storage.googleapis.com/learning-datasets/rps-test-set.zip 
@@ -9,29 +13,28 @@
     HTTP request sent, awaiting response... 200 OK
     Length: 200682221 (191M) [application/zip]
     Saving to: ‘rps.zip’
-    
-    rps.zip             100%[===================>] 191.38M  16.3MB/s    in 13s     
-    
+
+    rps.zip             100%[===================>] 191.38M  16.3MB/s    in 13s
+
     2023-05-31 00:38:15 (14.7 MB/s) - ‘rps.zip’ saved [200682221/200682221]
-    
+
     --2023-05-31 00:38:16--  https://storage.googleapis.com/learning-datasets/rps-test-set.zip
     Resolving storage.googleapis.com (storage.googleapis.com)... 142.251.10.128, 142.250.4.128, 74.125.68.128, ...
     Connecting to storage.googleapis.com (storage.googleapis.com)|142.251.10.128|:443... connected.
     HTTP request sent, awaiting response... 200 OK
     Length: 29516758 (28M) [application/zip]
     Saving to: ‘rps-test-set.zip’
-    
-    rps-test-set.zip    100%[===================>]  28.15M  12.6MB/s    in 2.2s    
-    
-    2023-05-31 00:38:18 (12.6 MB/s) - ‘rps-test-set.zip’ saved [29516758/29516758]
-    
 
+    rps-test-set.zip    100%[===================>]  28.15M  12.6MB/s    in 2.2s
+
+    2023-05-31 00:38:18 (12.6 MB/s) - ‘rps-test-set.zip’ saved [29516758/29516758]
+
+## 解压数据集
 
 
 ```python
 !mv rps.zip ~/DataSet/ &&mv rps-test-set.zip ~/DataSet/
 ```
-
 
 ```python
 import os
@@ -75,7 +78,7 @@ print(scissors_files[:10])
     ['paper02-048.png', 'paper06-055.png', 'paper07-116.png', 'paper06-119.png', 'paper05-043.png', 'paper06-017.png', 'paper05-046.png', 'paper04-006.png', 'paper02-037.png', 'paper01-083.png']
     ['scissors03-008.png', 'testscissors01-113.png', 'scissors02-117.png', 'scissors03-061.png', 'testscissors03-045.png', 'scissors03-058.png', 'scissors02-074.png', 'testscissors02-008.png', 'scissors01-011.png', 'scissors04-031.png']
 
-
+## 预览图形
 
 ```python
 %matplotlib inline
@@ -100,42 +103,19 @@ for i, img_path in enumerate(next_rock+next_paper+next_scissors):
   plt.show()
 ```
 
-
-    
 ![png](exp5-2_files/exp5-2_4_0.png)
-    
 
-
-
-    
 ![png](exp5-2_files/exp5-2_4_1.png)
-    
 
-
-
-    
 ![png](exp5-2_files/exp5-2_4_2.png)
-    
 
-
-
-    
 ![png](exp5-2_files/exp5-2_4_3.png)
-    
 
-
-
-    
 ![png](exp5-2_files/exp5-2_4_4.png)
-    
 
-
-
-    
 ![png](exp5-2_files/exp5-2_4_5.png)
-    
 
-
+## 开始训练模型
 
 ```python
 import tensorflow as tf
@@ -200,12 +180,11 @@ model.compile(loss = 'categorical_crossentropy', optimizer='rmsprop', metrics=['
 
 history = model.fit(train_generator, epochs=25, steps_per_epoch=20, validation_data = validation_generator, verbose = 1, validation_steps=3)
 
-model.save("rps.h5")
+model.save("rps.h5") ## 导出模型
 ```
 
     Found 2520 images belonging to 3 classes.
     Found 372 images belonging to 3 classes.
-
 
     2023-05-31 00:42:06.965079: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcuda.so.1'; dlerror: libcuda.so.1: cannot open shared object file: No such file or directory
     2023-05-31 00:42:06.965113: W tensorflow/stream_executor/cuda/cuda_driver.cc:269] failed call to cuInit: UNKNOWN ERROR (303)
@@ -213,57 +192,52 @@ model.save("rps.h5")
     2023-05-31 00:42:06.965708: I tensorflow/core/platform/cpu_feature_guard.cc:151] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F FMA
     To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
 
-
     Model: "sequential"
     _________________________________________________________________
-     Layer (type)                Output Shape              Param #   
+     Layer (type)                Output Shape              Param #
     =================================================================
-     conv2d (Conv2D)             (None, 148, 148, 64)      1792      
-                                                                     
-     max_pooling2d (MaxPooling2D  (None, 74, 74, 64)       0         
-     )                                                               
-                                                                     
-     conv2d_1 (Conv2D)           (None, 72, 72, 64)        36928     
-                                                                     
-     max_pooling2d_1 (MaxPooling  (None, 36, 36, 64)       0         
-     2D)                                                             
-                                                                     
-     conv2d_2 (Conv2D)           (None, 34, 34, 128)       73856     
-                                                                     
-     max_pooling2d_2 (MaxPooling  (None, 17, 17, 128)      0         
-     2D)                                                             
-                                                                     
-     conv2d_3 (Conv2D)           (None, 15, 15, 128)       147584    
-                                                                     
-     max_pooling2d_3 (MaxPooling  (None, 7, 7, 128)        0         
-     2D)                                                             
-                                                                     
-     flatten (Flatten)           (None, 6272)              0         
-                                                                     
-     dropout (Dropout)           (None, 6272)              0         
-                                                                     
-     dense (Dense)               (None, 512)               3211776   
-                                                                     
-     dense_1 (Dense)             (None, 3)                 1539      
-                                                                     
+     conv2d (Conv2D)             (None, 148, 148, 64)      1792
+
+    max_pooling2d (MaxPooling2D  (None, 74, 74, 64)       0
+    )
+
+    conv2d_1 (Conv2D)           (None, 72, 72, 64)        36928
+
+    max_pooling2d_1 (MaxPooling  (None, 36, 36, 64)       0
+    2D)
+
+    conv2d_2 (Conv2D)           (None, 34, 34, 128)       73856
+
+    max_pooling2d_2 (MaxPooling  (None, 17, 17, 128)      0
+    2D)
+
+    conv2d_3 (Conv2D)           (None, 15, 15, 128)       147584
+
+    max_pooling2d_3 (MaxPooling  (None, 7, 7, 128)        0
+    2D)
+
+    flatten (Flatten)           (None, 6272)              0
+
+    dropout (Dropout)           (None, 6272)              0
+
+    dense (Dense)               (None, 512)               3211776
+
+    dense_1 (Dense)             (None, 3)                 1539
+
     =================================================================
     Total params: 3,473,475
     Trainable params: 3,473,475
     Non-trainable params: 0
     _________________________________________________________________
 
-
     2023-05-31 00:42:09.265797: W tensorflow/core/framework/cpu_allocator_impl.cc:82] Allocation of 34020000 exceeds 10% of free system memory.
 
-
     Epoch 1/25
-
 
     2023-05-31 00:42:12.472458: W tensorflow/core/framework/cpu_allocator_impl.cc:82] Allocation of 34020000 exceeds 10% of free system memory.
     2023-05-31 00:42:12.520803: W tensorflow/core/framework/cpu_allocator_impl.cc:82] Allocation of 706535424 exceeds 10% of free system memory.
     2023-05-31 00:42:13.361096: W tensorflow/core/framework/cpu_allocator_impl.cc:82] Allocation of 176633856 exceeds 10% of free system memory.
     2023-05-31 00:42:13.473004: W tensorflow/core/framework/cpu_allocator_impl.cc:82] Allocation of 167215104 exceeds 10% of free system memory.
-
 
     20/20 [==============================] - 81s 4s/step - loss: 1.8150 - accuracy: 0.3552 - val_loss: 1.5109 - val_accuracy: 0.3333
     Epoch 2/25
@@ -315,7 +289,7 @@ model.save("rps.h5")
     Epoch 25/25
     20/20 [==============================] - 72s 4s/step - loss: 0.0775 - accuracy: 0.9746 - val_loss: 0.0090 - val_accuracy: 1.0000
 
-
+## 生成训练过程中的精度折线图
 
 ```python
 import matplotlib.pyplot as plt
@@ -334,12 +308,6 @@ plt.figure()
 plt.show()
 ```
 
-
-    
 ![png](exp5-2_files/exp5-2_6_0.png)
-    
-
-
 
     <Figure size 640x480 with 0 Axes>
-
